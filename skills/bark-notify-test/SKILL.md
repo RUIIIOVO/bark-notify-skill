@@ -2,7 +2,7 @@
 name: bark-notify-test
 description: Send a Bark verification notification for the current Claude Code Bark setup on macOS. Use when the user wants to test delivery, confirm encryption works, or check whether the configured completion notification is healthy.
 argument-hint: [optional project name]
-version: 0.1.0
+version: 0.2.0
 ---
 
 # Bark Notify Test

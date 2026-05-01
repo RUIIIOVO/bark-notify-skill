@@ -2,7 +2,7 @@
 name: bark-notify-uninstall
 description: Remove Bark notification configuration from Claude Code on macOS. Use when the user wants to uninstall, remove, or clean up Bark notifications, delete the Bark hook, or reset their Bark setup.
 argument-hint: [none]
-version: 0.1.0
+version: 0.2.0
 ---
 
 # Bark Notify Uninstall
@@ -12,7 +12,7 @@ Remove the Bark notification hook and script from the local Claude Code environm
 ## Behavior
 
 1. Read `~/.claude/settings.json` if it exists.
-2. Remove the `Stop`, `StopFailure`, and `SessionEnd` hooks that point to `claude-stop-bark.sh`.
+2. Remove the `Stop`, `StopFailure`, `SessionEnd`, and `Notification` hooks that point to `claude-stop-bark.sh`.
    - Preserve all other hooks and settings.
    - If a hook event has other hooks besides the Bark one, keep those.
    - If a hook event does not exist, skip it.

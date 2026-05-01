@@ -1,7 +1,7 @@
 ---
 name: bark-notify
 description: Use this skill whenever the user wants Claude Code on a Mac to notify an iPhone through Bark when a task, turn, or coding session finishes. Trigger on requests about Bark notifications, Claude completion alerts, iPhone push reminders, macOS to iPhone completion messages, Bark hook setup, or Bark troubleshooting, even if the user does not explicitly say skill or plugin.
-version: 0.1.0
+version: 0.2.0
 ---
 
 # Bark Notify

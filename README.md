@@ -2,24 +2,16 @@
 
 # bark-notify-skill
 
-Get a push notification on your iPhone the moment Claude Code finishes thinking — so you can step away from the terminal without missing the result.
-
-A Claude Code plugin that uses [Bark](https://github.com/Finb/Bark) to send completion alerts from macOS to your iPhone.
-
-## Why you might want this
-
-- You kicked off a long task and switched to another window — Claude finishes silently and you don't notice for 10 minutes.
-- You're away from the desk (kitchen, meeting, etc.) but want to know the moment Claude is ready for your next input.
-- You use tmux and want bell-based alerts when Claude Code is interrupted with `Ctrl+C`.
+A Claude Code plugin that pushes a notification to your iPhone via [Bark](https://github.com/Finb/Bark) when Claude Code finishes a turn, errors out, or asks for your approval.
 
 ## Requirements
 
 - macOS with Claude Code installed
-- iPhone with the [Bark](https://apps.apple.com/app/bark-customed-notifications/id1403753865) app installed and a push URL ready (looks like `https://api.day.app/<your-device-key>`)
+- iPhone with the [Bark](https://apps.apple.com/app/bark-customed-notifications/id1403753865) app installed and a push URL ready (`https://api.day.app/<your-device-key>`)
 
 ## Install
 
-In any Claude Code session, run:
+In any Claude Code session:
 
 ```text
 /plugin marketplace add RUIIIOVO/bark-notify-skill
@@ -27,11 +19,7 @@ In any Claude Code session, run:
 /reload-plugins
 ```
 
-> The first command registers this repo as a plugin marketplace. The second installs the plugin from it. They look similar but are two distinct steps.
-
-## Set it up (1 minute)
-
-After install, run:
+## Configure
 
 ```text
 /bark-notify-skill:bark-notify-setup
@@ -43,31 +31,33 @@ You will be asked for:
 2. Plain or **encrypted** mode (encrypted is recommended if your push URL is sensitive)
 3. If encrypted: a 16-character key (must match your iPhone Bark settings: `AES128` / `CBC` / `pkcs7`)
 
-Then verify it works:
+Verify:
 
 ```text
 /bark-notify-skill:bark-notify-test
 ```
 
-You should see a push on your iPhone within a second or two.
+## Notifications
 
-## What you'll see
+The push **title** is always the project directory name. The **body** is differentiated per event:
 
-When Claude Code finishes a turn, your iPhone gets a push:
+| When | Body | Bark `level` |
+|------|------|--------------|
+| Claude finishes a turn normally | `✅ Claude Code 已完成` | `active` |
+| Claude needs your approval (tool-permission prompt) | `🔔 Claude Code 等待操作` | `timeSensitive` |
+| A turn ends with an error | `❌ Claude Code 出错` | `timeSensitive` |
+| The session ends abnormally (crash, killed) | `⚠️ Claude Code 会话异常结束` | `timeSensitive` |
+| You close the CLI yourself (`/exit`, `/clear`, `/logout`) | **silent** | — |
+| Claude Code's idle-input 60s reminder | **silent** | — |
 
-- **Title**: the name of the project directory you're working in
-- **Body**: `Claude Code 已完成` ("Claude Code is done")
+## tmux
 
-## Bonus: tmux users
-
-If you run Claude Code inside tmux, enable bell monitoring so you also get notified when Claude is interrupted with `Ctrl+C` (a case where the Stop hook does not fire):
+The script emits a terminal bell after every notification. To surface it in tmux:
 
 ```bash
 tmux set -g monitor-bell on
 tmux set -g visual-bell on
 ```
-
-The Bark script emits a terminal bell after every notification, which tmux picks up as pane activity.
 
 ## Uninstall
 
@@ -75,17 +65,17 @@ The Bark script emits a terminal bell after every notification, which tmux picks
 /bark-notify-skill:bark-notify-uninstall
 ```
 
-This removes the Bark hook from your `~/.claude/settings.json` and deletes the local script.
+Removes the Bark hooks from `~/.claude/settings.json` and deletes the local script.
 
 ## Troubleshooting
 
-Just ask Claude in any session — the `bark-notify` skill will guide you through common issues (no notification arriving, encrypted mode mismatch, hook not firing, etc.). Or run setup again to reconfigure.
+Ask Claude in any session — the `bark-notify` skill will guide you. Or re-run setup to reconfigure.
 
-## Privacy & safety
+## Privacy
 
-- Your Bark URL and encryption key stay **on your machine only** — they are written to a local script under `~/.claude/`, never sent anywhere except to the Bark server you control.
-- Setup **merges** into your existing `~/.claude/settings.json` rather than overwriting it.
-- Encrypted mode means the notification body is AES-encrypted before it leaves your Mac.
+- Your Bark URL and encryption key are stored locally in `~/.claude/` and never sent anywhere except your Bark server.
+- Setup merges into your existing `~/.claude/settings.json` without overwriting other entries.
+- In encrypted mode, the notification body is AES-128-CBC encrypted before leaving your Mac.
 
 ---
 
@@ -100,16 +90,20 @@ cd bark-notify-skill
 claude --plugin-dir .
 ```
 
-Skills included in this plugin:
+Skills:
 
 | Skill | Trigger | Purpose |
 |-------|---------|---------|
 | `bark-notify` | Auto (model-invoked) | Guidance, setup decisions, troubleshooting |
 | `bark-notify-setup` | `/bark-notify-skill:bark-notify-setup` | Interactive setup |
-| `bark-notify-test` | `/bark-notify-skill:bark-notify-test` | Sends a verification notification |
+| `bark-notify-test` | `/bark-notify-skill:bark-notify-test` | Verification notification |
 | `bark-notify-uninstall` | `/bark-notify-skill:bark-notify-uninstall` | Removes hook and script |
 
 </details>
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
