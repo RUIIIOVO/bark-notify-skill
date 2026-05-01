@@ -58,6 +58,17 @@ Claude Code 的 Bark 推送通知插件。当 Claude Code 在 macOS 上完成一
 - 16 位加密密钥
 - iPhone Bark 应用对应设置：`AES128` + `CBC` + `pkcs7`
 
+## tmux 兼容
+
+Bark 脚本每次发送通知后会输出终端 bell（`\a`）。在 tmux 中使用时，开启 bell 监控即可接收通知：
+
+```bash
+tmux set -g monitor-bell on
+tmux set -g visual-bell on
+```
+
+此方案可覆盖 Ctrl+C 中断的场景 — Claude Code 的 hook 不会触发，但 tmux 检测到 pane 活动后会通知你。
+
 ## 配置会修改的文件
 
 Setup 流程确认后写入两个文件：

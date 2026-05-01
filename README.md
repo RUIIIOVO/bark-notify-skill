@@ -58,6 +58,17 @@ Requires:
 - 16-character encryption key
 - Matching Bark iPhone settings: `AES128` + `CBC` + `pkcs7`
 
+## tmux compatibility
+
+The Bark script outputs a terminal bell (`\a`) after each notification. To receive notifications when Claude Code is in a tmux pane:
+
+```bash
+tmux set -g monitor-bell on
+tmux set -g visual-bell on
+```
+
+This covers the Ctrl+C interrupt case where Claude Code hooks do not fire — tmux detects the pane activity and notifies you.
+
 ## What setup modifies
 
 The setup flow writes two local files (after confirmation):

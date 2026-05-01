@@ -83,6 +83,32 @@ Script responsibilities:
 - base64 the ciphertext
 - send `ciphertext` and `iv` to the Bark push URL
 
+## Terminal bell for tmux / terminal notifications
+
+After sending the Bark push, the script should output a terminal bell character (`\a`). This enables tmux and terminal apps to detect activity and notify the user — including on Ctrl+C interrupts where Claude Code hooks do not fire.
+
+Add this line at the end of the script:
+
+```bash
+printf '\a'
+```
+
+For tmux, users should enable bell monitoring:
+
+```bash
+tmux set -g monitor-bell on
+tmux set -g visual-bell on
+```
+
+Or use activity monitoring as a fallback:
+
+```bash
+tmux set -g monitor-activity on
+tmux set -g visual-activity on
+```
+
+This way, even when a hook event does not fire (e.g., mid-turn Ctrl+C), tmux still detects the pane activity and notifies the user.
+
 ## Recommended Claude icon
 
 ```text

@@ -35,6 +35,7 @@ After setup, the local machine should contain:
      - title = project name
      - body = `Claude Code 已完成`
    - Use the Claude app icon URL in the Bark payload.
+   - End the script with `printf '\a'` (terminal bell) for tmux/terminal notifications.
 
 4. Show the user what will change before applying it.
    - Mention both file paths.
