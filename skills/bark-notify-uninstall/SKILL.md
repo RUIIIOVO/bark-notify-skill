@@ -12,10 +12,11 @@ Remove the Bark notification hook and script from the local Claude Code environm
 ## Behavior
 
 1. Read `~/.claude/settings.json` if it exists.
-2. Remove only the `Stop` hook that points to `claude-stop-bark.sh`.
+2. Remove the `Stop`, `StopFailure`, and `SessionEnd` hooks that point to `claude-stop-bark.sh`.
    - Preserve all other hooks and settings.
-   - If no `Stop` hook exists, skip this step.
-   - If `Stop` has other hooks besides the Bark one, keep those.
+   - If a hook event has other hooks besides the Bark one, keep those.
+   - If a hook event does not exist, skip it.
+   - If removing all Bark hooks leaves the `hooks` key empty, remove the `hooks` key entirely.
 3. Delete `~/.claude/claude-stop-bark.sh` if it exists.
 4. Report what was removed to the user.
 
