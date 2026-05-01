@@ -1,6 +1,6 @@
 # Config patterns
 
-This reference contains the two supported Bark hook patterns.
+This reference contains the supported Bark hook patterns.
 
 ## Stop hook shape
 
@@ -19,12 +19,44 @@ Merge this structure into `~/.claude/settings.json`:
           }
         ]
       }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/bin/bash /Users/<user>/.claude/claude-stop-bark.sh",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/bin/bash /Users/<user>/.claude/claude-stop-bark.sh",
+            "async": true
+          }
+        ]
+      }
     ]
   }
 }
 ```
 
 Always merge instead of replacing unrelated config.
+
+## Event types
+
+| Hook event | Trigger | Notification body |
+|------------|---------|-------------------|
+| `Stop` | Claude finishes responding normally | `Claude Code 已完成` |
+| `StopFailure` | Turn ends due to API error | `Claude Code 出错` |
+| `SessionEnd` | Session terminates (Ctrl+C exit, /exit) | `Claude Code 会话结束` |
+
+The script reads the `HOOK_EVENT` environment variable (set by Claude Code) to determine the event type and choose the notification body.
 
 ## Plain Bark script pattern
 
@@ -34,8 +66,9 @@ Script responsibilities:
 - read hook payload from stdin
 - parse `.cwd`
 - derive project name from the current path basename
+- read `HOOK_EVENT` to determine notification body
 - send title = project name
-- send body = `Claude Code 已完成`
+- send body based on event type (see table above)
 - use Bark icon field with Claude icon URL
 
 ## Encrypted Bark script pattern

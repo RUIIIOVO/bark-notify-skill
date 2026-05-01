@@ -13,7 +13,7 @@ Configure the current macOS Claude Code environment to send a Bark notification 
 
 After setup, the local machine should contain:
 - `~/.claude/claude-stop-bark.sh`
-- a `Stop` hook in `~/.claude/settings.json` that runs that script asynchronously
+- hooks in `~/.claude/settings.json` for `Stop`, `StopFailure`, and `SessionEnd` that run that script asynchronously
 
 ## Required behavior
 
@@ -26,7 +26,7 @@ After setup, the local machine should contain:
 2. Inspect current Claude config before writing.
    - Read `~/.claude/settings.json` if it exists.
    - Never overwrite unrelated settings.
-   - Merge in the `Stop` hook safely.
+   - Merge in the `Stop`, `StopFailure`, and `SessionEnd` hooks safely.
 
 3. Use the config templates from `../bark-notify/references/config-patterns.md`.
    - Write a small shell script to `~/.claude/claude-stop-bark.sh`.
@@ -42,7 +42,7 @@ After setup, the local machine should contain:
 
 5. Validate after writing.
    - Ensure the script is executable.
-   - Confirm the `Stop` hook command points to `/bin/bash ~/.claude/claude-stop-bark.sh`.
+   - Confirm all three hook commands point to `/bin/bash ~/.claude/claude-stop-bark.sh`.
    - If the user wants, immediately hand off to `/bark-notify-skill:bark-notify-test`.
 
 ## Safety rules

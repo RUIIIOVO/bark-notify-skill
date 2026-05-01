@@ -18,6 +18,7 @@ Claude Code 的 Bark 推送通知插件。当 Claude Code 在 macOS 上完成一
 | `bark-notify` | 自动触发（模型调用） | 提供引导、决策和故障排查 |
 | `bark-notify-setup` | `/bark-notify-skill:bark-notify-setup` | 交互式配置，写入本地脚本和钩子 |
 | `bark-notify-test` | `/bark-notify-skill:bark-notify-test` | 发送测试通知，验证配置 |
+| `bark-notify-uninstall` | `/bark-notify-skill:bark-notify-uninstall` | 卸载 Bark 钩子和脚本 |
 
 ## 通知格式
 
@@ -79,7 +80,9 @@ bark-notify-skill/
 │   │       └── troubleshooting.md
 │   ├── bark-notify-setup/
 │   │   └── SKILL.md
-│   └── bark-notify-test/
+│   ├── bark-notify-test/
+│   │   └── SKILL.md
+│   └── bark-notify-uninstall/
 │       └── SKILL.md
 ├── README.md
 ├── README.zh-CN.md

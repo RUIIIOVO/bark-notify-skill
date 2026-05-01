@@ -18,6 +18,7 @@ A Claude Code plugin that sends a Bark push notification to your iPhone when Cla
 | `bark-notify` | Auto (model-invoked) | Guidance, setup decisions, and troubleshooting |
 | `bark-notify-setup` | `/bark-notify-skill:bark-notify-setup` | Interactive setup — writes local script and hook |
 | `bark-notify-test` | `/bark-notify-skill:bark-notify-test` | Sends a verification notification |
+| `bark-notify-uninstall` | `/bark-notify-skill:bark-notify-uninstall` | Removes Bark hook and script |
 
 ## Notification format
 
@@ -79,7 +80,9 @@ bark-notify-skill/
 │   │       └── troubleshooting.md
 │   ├── bark-notify-setup/
 │   │   └── SKILL.md
-│   └── bark-notify-test/
+│   ├── bark-notify-test/
+│   │   └── SKILL.md
+│   └── bark-notify-uninstall/
 │       └── SKILL.md
 ├── README.md
 ├── README.zh-CN.md
