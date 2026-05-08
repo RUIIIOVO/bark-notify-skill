@@ -42,9 +42,18 @@ After setup, the local machine should contain:
    - Hook command in settings.json: `/bin/bash ~/.claude/claude-stop-bark.sh`
 
    ### Windows
-   - Write `%USERPROFILE%\.claude\claude-stop-bark.ps1`.
-   - Resolve the absolute home path first (e.g. run `$env:USERPROFILE` in PowerShell or read it from the environment) and embed it as a literal path.
+   - Resolve the absolute home path first (run `$env:USERPROFILE` in PowerShell) and embed it as a literal path.
    - Use the PowerShell plain/encrypted template exactly as shown in `config-patterns.md`.
+   - **🛑 DO NOT use the `Write` tool to create `claude-stop-bark.ps1`.** The `Write` tool writes UTF-8 *without* BOM. Windows PowerShell 5.1 then decodes the file using the system ANSI code page (GBK on Chinese Windows), which mangles the Chinese characters in string literals (`已完成` etc.) and produces `Unexpected token` parse errors at hook execution time. **You MUST write the file via PowerShell with an explicit UTF-8-with-BOM encoder**:
+     ```powershell
+     $content = @'
+     <PASTE THE FULL .PS1 SCRIPT HERE>
+     '@
+     $utf8Bom = New-Object System.Text.UTF8Encoding($true)
+     [System.IO.File]::WriteAllText("$env:USERPROFILE\.claude\claude-stop-bark.ps1", $content, $utf8Bom)
+     ```
+     Use a **single-quoted here-string** (`@'...'@`) so PowerShell does not interpolate `$variables` inside the script body. The closing `'@` must be at column 0.
+   - After writing, verify the BOM is present (first 3 bytes = `EF BB BF`). If missing, abort and re-write — the hook will silently fail at runtime otherwise.
    - Hook command in settings.json: `powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File "C:\Users\<username>\.claude\claude-stop-bark.ps1"` — use the resolved absolute path, not `%USERPROFILE%`.
    - Do NOT run `chmod` on Windows — PS1 files do not need executable bits.
 

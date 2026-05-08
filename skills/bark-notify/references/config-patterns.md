@@ -183,11 +183,27 @@ Script responsibilities:
 
 Use this template when generating `claude-stop-bark.ps1` on Windows.
 
+> ⚠️ **CRITICAL — file must be saved as UTF-8 with BOM.**
+> Windows PowerShell 5.1 reads BOM-less script files using the system ANSI code page (GBK on zh-CN Windows, Windows-1252 on en-US, etc.). The script contains Chinese characters in string literals (`已完成`, `出错`, `等待操作`, `会话异常结束`); without a BOM these are decoded as mojibake and **the script fails to parse** (`Unexpected token` errors). The standard editor `Write` tool writes plain UTF-8 without BOM, which is wrong here. **You MUST write the .ps1 file via PowerShell using an explicit UTF-8-with-BOM encoder:**
+>
+> ```powershell
+> $utf8Bom = New-Object System.Text.UTF8Encoding($true)
+> [System.IO.File]::WriteAllText('C:\Users\<username>\.claude\claude-stop-bark.ps1', $content, $utf8Bom)
+> ```
+>
+> Do **not** use `Set-Content -Encoding utf8` from PS 7+ (it omits BOM by default — different from PS 5.1's `utf8` which adds BOM). Always use the `[System.Text.UTF8Encoding]::new($true)` pattern above to be explicit and version-independent.
+>
+> After writing, verify the first three bytes are `EF BB BF`:
+> ```powershell
+> [byte[]]$bytes = Get-Content 'C:\Users\<username>\.claude\claude-stop-bark.ps1' -Encoding Byte -TotalCount 3
+> if ($bytes[0] -ne 0xEF -or $bytes[1] -ne 0xBB -or $bytes[2] -ne 0xBF) { throw 'Missing UTF-8 BOM' }
+> ```
+
 Key differences from the bash version:
 - Read stdin with `[System.IO.StreamReader]::new([Console]::OpenStandardInput(), [Text.Encoding]::UTF8)` — this handles the UTF-8 JSON payload correctly regardless of the system's console code page.
 - Parse JSON with PowerShell's native `ConvertFrom-Json` — no `python3` dependency.
 - Send HTTP with `Invoke-RestMethod` — no `curl` dependency.
-- Build emoji with `[char]::ConvertFromUtf32()` — avoids PS1 file encoding issues; the values are constructed at runtime.
+- Build emoji with `[char]::ConvertFromUtf32()` — avoids issues with surrogate pairs and lets the values be constructed at runtime.
 - Terminal bell: `[Console]::Write([char]7)` (equivalent to bash `printf '\a'`).
 - No `chmod` needed — `.ps1` files do not need executable bits.
 
